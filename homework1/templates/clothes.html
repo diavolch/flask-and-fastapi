@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Одежда
+{% endblock %}
+
+{% block content %}
+<h1>Страница с одеждой</h1>
+<table class="table">
+    <tr>
+        {% for item in clothes %}
+        <td>{{ item.name }}: {{ item.price }} рублей</td>
+        {% endfor %}
+    </tr>
+</table>
+{% endblock %}
