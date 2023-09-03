@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, flash, make_response, url_for, session
+from flask import Flask, render_template, request, redirect, make_response, url_for
 
 app = Flask(__name__)
 
@@ -17,7 +17,7 @@ def login():
     name = request.form.get('name')
     email = request.form.get('email')
     response = make_response(redirect(url_for('hello', name=name)))
-    response.set_cookie(name)
+    response.set_cookie('name', name)
     print(name)
     return response
 
@@ -25,16 +25,18 @@ def login():
 @app.post('/logout/')
 def logout():
     response = make_response(redirect(url_for('index')))
-    response.set_cookie('name', '', 0)
-    # response.delete_cookie('name')
-    # session.pop('name', None)
+    response.delete_cookie('name')
     return response
 
 
 @app.route('/hello/<name>')
 def hello(name):
-    # name = request.cookies.get('name')
-    return render_template('hello.html', name=name)
+    if request.cookies.get('name'):
+        if name != request.cookies.get('name'):
+            return redirect((url_for('hello', name=request.cookies.get('name'))))
+        return render_template('hello.html', name=name)
+    else:
+        return render_template('index.html')
 
 
 
